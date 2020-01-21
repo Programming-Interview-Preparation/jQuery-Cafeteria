@@ -1,0 +1,70 @@
+<!-- Mailing Address similar to Billing Address and Billing Address Same as Shipping Address using  jQuery -->
+<!-- HTML Section -->
+<div class="form-group">
+    <label for="mailing_address" class="control-label">Mailing Address
+        <sup class="text-danger">*</sup>
+    </label>
+
+    <input type="text" name="mailing_address" class="form-control" id="mailing_address"
+           placeholder="Enter Mailing Address" maxlength="200" required="">
+
+</div>
+
+<div class="col-sm-6">
+    <div class="form-group">
+        <label for="billing_address" class="control-label">Billing Address</label>
+        <input type="text" name="billing_address" class="form-control" id="billing_address"
+               placeholder="Enter Billing Address" maxlength="200">
+
+        <input type="checkbox" id="copy_mailingaddress" name="mailingaddress"> Same As
+        Mailing Address
+    </div>
+</div>
+<div class="col-sm-6">
+    <div class="form-group">
+        <label for="shipping_address" class="control-label">Shipping Address</label>
+        <input type="text" name="shipping_address" class="form-control" id="shipping_address"
+               placeholder="Enter Shipping Address" maxlength="200">
+
+        <input type="checkbox" id="copy_billingaddress" name="billingaddress"> Same As
+        Billing Address
+    </div>
+</div>
+
+
+<!-- JQuery Section -->
+<script>
+    $(document).ready(function () {
+        $("#copy_mailingaddress").on("click", function () {
+            let mailing_address = $.trim($("#mailing_address").val());
+            if (mailing_address !== '') {
+                if ($(this).is(":checked")) {
+                    $('#billing_address').val(mailing_address);
+                } else {
+                    $("#billing_address").val('');
+                }
+            } else {
+                alert('Mailing address is empty');
+                return false;
+            }
+
+        });
+
+        $("#copy_billingaddress").on("click", function () {
+            let billing_address = $.trim($("#billing_address").val());
+            if (billing_address !== '') {
+                if ($(this).is(":checked")) {
+                    $('#shipping_address').val(billing_address);
+                } else {
+                    $("#shipping_address").val('');
+                }
+            } else {
+                alert('Billing address is empty');
+                return false;
+            }
+
+        });
+
+    })
+    ;
+</script>
