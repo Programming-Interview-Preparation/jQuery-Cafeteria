@@ -1,0 +1,68 @@
+<div class="form-group">
+    <label for="id_code" class="control-label">Code</label><sup class="text-danger">*</sup>
+    <input type="text" name="code" class="form-control" placeholder="Enter Code" autocomplete="off" id="id_code"
+           maxlength="200" required="">
+
+    <span id="codeExistingMsg" style="background: #e7e7e7;"></span>
+
+</div>
+<!-- JS -->
+<script>
+    $(document).on('keyup', '#id_code', function (e) {
+        e.preventDefault();
+        let targetElement = $('#codeExistingMsg');
+        {#let targetElement = document.getElementById('codeExistingMsg');#}
+        let keyword = $.trim($(this).val());
+        let url = '{% url "module:search_code" %}';
+        if (keyword !== '') {
+            let csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {
+                    'keyword': keyword,
+                },
+                dataType: 'html',
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+                success: function (data) {
+                    {#targetElement.innerHTML = data;#}
+                    targetElement.html(data);
+                    {#targetEleent.html('<span class="text-info"><i class="fa fa-spinner"></i> This Code Is Available...</span>');#}
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        } else {
+            targetElement.html(' Code Search must not empty');
+        }
+
+    });
+</script>
+<!-- URL -->
+url_patterns = [
+    path("get_code/", GetCodeIDBySearch.as_view(), name="search_code")
+]
+<!-- Template(In Django) -->
+
+class GetCodeIDBySearch(View):
+    def post(self, request):
+        if request.is_ajax():
+            keyword = request.POST['keyword']
+            model_code = Model.objects.only('code').filter(
+                Q(code__iexact=keyword.strip())
+            )
+            if not model_code:
+                return HttpResponse(
+                    keyword + ' is available <span class="text-success"> <i class="fa fa-check"></i></span>')
+            else:
+                return HttpResponse(
+                    keyword + ' is already used. try another one. <span class="text-danger"><i class="fa fa-times"></i></span>')
+
+        else:
+            return HttpResponse('You did something wrong...')
