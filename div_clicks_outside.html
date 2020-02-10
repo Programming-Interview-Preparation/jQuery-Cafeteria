@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <script>
+         window.onload = function(){
+            var hideMe = document.getElementById('hideMe');
+            document.onclick = function(e){
+               if(e.target.id !== 'hideMe'){
+                  hideMe.style.display = 'none';
+               }
+            };
+         };
+      </script>
+      <div id="hideMe">Click outside this div and hide it.</div>
+   </body>
+</html>
